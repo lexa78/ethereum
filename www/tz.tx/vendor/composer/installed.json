@@ -1,0 +1,46 @@
+{
+    "packages": [
+        {
+            "name": "lajosbencz/geth-php",
+            "version": "0.2.1",
+            "version_normalized": "0.2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lajosbencz/geth-php.git",
+                "reference": "295847f0e639181db5a4d61d6d9b189b96ffda00"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lajosbencz/geth-php/zipball/295847f0e639181db5a4d61d6d9b189b96ffda00",
+                "reference": "295847f0e639181db5a4d61d6d9b189b96ffda00",
+                "shasum": ""
+            },
+            "time": "2017-09-14T10:13:02+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "GethApi\\": "src/GethApi"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lajos Bencz",
+                    "email": "lazos@lazos.me"
+                }
+            ],
+            "description": "PHP wrapper for Geth JSON RPC",
+            "support": {
+                "issues": "https://github.com/lajosbencz/geth-php/issues",
+                "source": "https://github.com/lajosbencz/geth-php/tree/0.2.1"
+            },
+            "install-path": "../lajosbencz/geth-php"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

@@ -1,0 +1,154 @@
+version: '3'
+
+services:
+    nginx:
+        image: nginx:latest
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./hosts:/etc/nginx/conf.d
+            - ./www:/var/www
+            - ./logs/nginx:/var/log/nginx
+        links:
+            - php
+        networks:
+          chainnet:
+            ipv4_address: 172.25.0.120
+    php:
+        build: ./images/php
+        links:
+            - mysql
+        volumes:
+            - ./www:/var/www
+        networks:
+          chainnet:
+            ipv4_address: 172.25.0.110
+#    mysql:
+#        image: mysql
+#        ports:
+#            - "3306:3306"
+#        volumes:
+#         - /etc/mysql:/etc/mysql
+#         - ./logs/mysql:/var/log/mysql
+#         - ./mysql:/var/lib/mysql
+#         - ./mysql-files:/var/lib/mysql-files
+#         - ./data:/docker-entrypoint-initdb.d
+#        environment:
+#            MYSQL_ROOT_PASSWORD: root
+#            MYSQL_DATABASE: test_db
+##        networks:
+##          chainnet:
+##            ipv4_address: 172.25.0.102
+    geth-bootnode:
+        hostname: geth-bootnode
+        environment:
+            - nodekeyhex=08f0e1dee5c1b4645f3331a566009e41a4514b6cd28656d63d0449ecf812812b #Needs to be fix, so that the miners know the resulting enode id
+#            - ip=172.25.0.101:30303
+            - ip=172.25.0.101:30311
+        build:
+            context: ./images/bootnode
+        ports:
+#            - 30303:30303/udp
+            - 30311:30311/udp
+        networks:
+            chainnet:
+                ipv4_address: 172.25.0.101 # The miners need to know the IP address later on
+    geth-dev-miner-1:
+        hostname: geth-dev-miner-1
+        depends_on:
+            - geth-bootnode
+        environment:
+            - address=0x8cc5a1a0802db41db826c2fcb72423744338dcb0 #derived from the private key which is passed in the args
+            - bootnodeId=76a8171707eca17647a47ca99ffd348927dfa60102792ea349a25d5192e61855be83b786e376276a306afcceea4ffd1c9c77e4370b417efc39f328a0d068004c #derived from the nodekeyhex of the bootnode
+            - bootnodeIp=172.25.0.101
+            - port=30312
+        build:
+            context: ./images/miner
+            args:
+                privatekey: df504d175ae63abf209bad9dda965310d99559620550e74521a6798a41215f46 # Please don't do something like this in production, okay?
+                password: pass
+        container_name: geth-miner-1
+        ports:
+            - 8545:8545
+        volumes:
+            - eth-data-1:/ethchaindata/.ethash
+        networks:
+            chainnet:
+                ipv4_address: 172.25.0.102 # The monitor needs to know this address
+#    geth-dev-miner-2:
+#        hostname: geth-dev-miner-2
+#        depends_on:
+#            - geth-bootnode
+#        environment:
+#            - address=0x3590aca93338b0721966a8d0c96ebf2c4c87c544 #derived from the private key which is passed in the args
+#            - bootnodeId=76a8171707eca17647a47ca99ffd348927dfa60102792ea349a25d5192e61855be83b786e376276a306afcceea4ffd1c9c77e4370b417efc39f328a0d068004c #derived from the nodekeyhex of the bootnode
+#            - bootnodeIp=172.25.0.101
+#        build:
+#            context: ./images/miner
+#            args:
+#                privatekey: bc5b578e0dcb2dbf98dd6e5fe62cb5a28b84a55e15fc112d4ca88e1f62bd7c35
+#                password: word
+#        container_name: geth-miner-2
+#        ports:
+#            - 8546:8545
+#        volumes:
+#            - eth-data-2:/ethchaindata/.ethash
+#        networks:
+#            chainnet:
+#                ipv4_address: 172.25.0.104
+    payment-wallet:
+        hostname: payment-wallet
+        depends_on:
+            - geth-bootnode
+        environment:
+            - address=0x53bea6b968af89da6ffbd86f7669f44745781055 #derived from the private key which is passed in the args
+            - bootnodeId=76a8171707eca17647a47ca99ffd348927dfa60102792ea349a25d5192e61855be83b786e376276a306afcceea4ffd1c9c77e4370b417efc39f328a0d068004c #derived from the nodekeyhex of the bootnode
+            - bootnodeIp=172.25.0.101
+            - port=30315
+        build:
+            context: ./images/node
+            args:
+                privatekey: 730fe7a7ea6f1c8fcec26e102bea05191bd30675c3c17b9a67626397ac9f0e4a
+                password: payment-wallet
+        container_name: payment-wallet
+        ports:
+            - 8547:8545
+        volumes:
+            - payment-wallet:/ethchaindata/.ethash
+        networks:
+            chainnet:
+                ipv4_address: 172.25.0.108
+#    client-wallet:
+#        hostname: client-wallet
+#        depends_on:
+#            - geth-bootnode
+#        environment:
+#            - address=0x507de9b2f0444cadef568661cad7dbf8d9d81dfe #derived from the private key which is passed in the args
+#            - bootnodeId=76a8171707eca17647a47ca99ffd348927dfa60102792ea349a25d5192e61855be83b786e376276a306afcceea4ffd1c9c77e4370b417efc39f328a0d068004c #derived from the nodekeyhex of the bootnode
+#            - bootnodeIp=172.25.0.101
+#        build:
+#            context: ./images/miner
+#            args:
+#                privatekey: 2660729d5a1fe6230447fdb06d63903e4d130acaa29d65812053f21bfeaab873
+#                password: client-wallet
+#        container_name: client-wallet
+#        ports:
+#            - 8548:8545
+#        volumes:
+#            - client-wallet:/ethchaindata/.ethash
+#        networks:
+#            chainnet:
+#                ipv4_address: 172.25.0.109
+networks:
+    chainnet:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.25.0.0/24
+
+volumes:
+    eth-data-1:
+    eth-data-2:
+    payment-wallet:
+    client-wallet:

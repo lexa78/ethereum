@@ -1,0 +1,56 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "a92815de9a1efddd2b26eee584fd6455",
+    "packages": [
+        {
+            "name": "lajosbencz/geth-php",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lajosbencz/geth-php.git",
+                "reference": "295847f0e639181db5a4d61d6d9b189b96ffda00"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lajosbencz/geth-php/zipball/295847f0e639181db5a4d61d6d9b189b96ffda00",
+                "reference": "295847f0e639181db5a4d61d6d9b189b96ffda00",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GethApi\\": "src/GethApi"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lajos Bencz",
+                    "email": "lazos@lazos.me"
+                }
+            ],
+            "description": "PHP wrapper for Geth JSON RPC",
+            "support": {
+                "issues": "https://github.com/lajosbencz/geth-php/issues",
+                "source": "https://github.com/lajosbencz/geth-php/tree/0.2.1"
+            },
+            "time": "2017-09-14T10:13:02+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
+}
